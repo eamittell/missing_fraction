@@ -36,7 +36,7 @@ P <- matrix(c(V1,rho*sqrt(V1)*sqrt(V2),rho*sqrt(V1)*sqrt(V2),V2),2,2)
 S1a_log <- S_logistic(0,beta1,0,1)
 
 # Prior viability selection on later-life trait
-S2a_log <- S1a_log/(P[1,1])*P[1,2]
+S2a_log <- S1a_log/(P[2,2])*P[1,2]
 
 # Variance of survivors from first to second episode
 V2b <- V2 - S2a_log^2
