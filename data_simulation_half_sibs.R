@@ -2,9 +2,19 @@
 library(mvtnorm)
 
 ## SIMULATION SETUP HALF SIBS ##
-# Residual covariance -> phenotypic covariance trait 2 0.4(G) + 0.4(R) = 0.8(P)
+## Half-sib data are used in the manuscript
+## However, we have carried out the same analyses on full-sib data and found no difference using the two different relatedness structures
+## The code for full-sib data generation are included in this repository
+
+##### Variables to use if running full loops
+# Residual covariance -> phenotypic covariance trait 2 for example 0.4(G) + 0.4(R) = 0.8(P)
+#cvrs <- c(0,0.4) -- Put range of residual (and so phenotypic) covariances that you want to simulate data for
+# Range of strengths of selection on early-life trait 1
+#betas <- c(-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.05,0,0.05,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9)
+
+# For one example simulation
 cvr <- 0.4
-betas <- c(-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.05,0,0.05,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9)
+beta <- 0.9
 n.sires <- 500 
 n.offspring <- 5
 
@@ -62,7 +72,7 @@ d$r2 <- r[,2]
 d$z1 <- d$a1 + d$r1
 d$z2 <- d$a2 + d$r2
 
-# Survival
+# Survival based on early-life trait 1
 inv.logit <- function(x){exp(x)/(1+exp(x))}
 surv_func <- function(x,a=0,b=beta){inv.logit(a+b*x)}
 d$W1 <- rbinom(dim(d)[1],1,surv_func(d$z1)) # Fitness at viability stage
@@ -75,7 +85,7 @@ d$z2_obs[which(d$W1==0)] <- NA # Don't observe later-life trait for those indivi
 d$a2_obs <- d$a2
 d$a2_obs[which(d$W1==0)] <- NA
 
-# Consequence for trait 2
+# Fitness consequence for trait 2
 d$W2 <- rpois(length(d$z1),exp(0+0.25*d$z2))
 # Total lifetime fitness
 d$W <- d$W2*d$W1
